@@ -1,2 +1,2 @@
 # vscode
-all vscode fiels 
+all vscode files 
