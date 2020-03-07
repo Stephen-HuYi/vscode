@@ -3,7 +3,7 @@
  * @Author: HuYi
  * @Date: 2020-03-06 08:32:14
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-07 12:17:58
+ * @LastEditTime: 2020-03-07 12:20:25
  */
 #include <iostream>
 #include <windows.h>
@@ -258,11 +258,9 @@ void Mat<T>::Print(T **A, int N)
     {
         for (int j = 0; j < N; j++)
         {
-
-            cout << A[i][j] << "\t";
-            if ((j + 1) % ((N)) == 0)
-                cout << endl;
+            cout << A[i][j] << " ";
         }
+        cout << endl;
     }
     cout << endl;
 }
