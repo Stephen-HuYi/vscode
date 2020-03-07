@@ -3,15 +3,17 @@
  * @Author: HuYi
  * @Date: 2020-03-06 08:32:14
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-06 17:12:36
+ * @LastEditTime: 2020-03-06 17:41:55
  */
 #include <iostream>
 #include <windows.h>
 #include <ctime>
-#define N 2000
 using namespace std;
 int main()
 {
+    cout << "Please enter matrix dimensions N , we Will randomly generate an N x N matrix" << endl;
+    int N;
+    cin >> N;
     //动态分配内存空间
     int **A, **B, **C;
     A = new int *[N];
@@ -47,8 +49,8 @@ int main()
     }
     endTime = clock(); //计时结束
     cout << "The run time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << endl;
-    /*
     //输出运算结果(矩阵维度较小时检验用)
+    /*
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < N; j++)
