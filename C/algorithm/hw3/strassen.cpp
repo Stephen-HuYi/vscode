@@ -3,7 +3,7 @@
  * @Author: HuYi
  * @Date: 2020-03-06 08:32:14
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-07 12:20:25
+ * @LastEditTime: 2020-03-08 16:55:25
  */
 #include <iostream>
 #include <windows.h>
@@ -72,11 +72,13 @@ void Mat<T>::MUL(T **A, T **B, T **Res, int N)
 template <typename T>
 void Mat<T>::Strassen(int N, T **A, T **B, T **C)
 {
-    //将矩阵维度扩充为2的幂次
+    //将矩阵维度扩充为偶数
     int n = 1;
-    while (n < N)
-        n *= 2;
-    if (n <= 128)
+    if (N % 2 == 1)
+        n = N + 1;
+    else
+        n = N;
+    if (n <= 2)
     {
         MUL(A, B, C, N);
     }
