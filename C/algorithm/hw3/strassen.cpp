@@ -3,7 +3,7 @@
  * @Author: HuYi
  * @Date: 2020-03-06 08:32:14
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-08 16:55:25
+ * @LastEditTime: 2020-03-09 20:29:01
  */
 #include <iostream>
 #include <windows.h>
@@ -13,7 +13,7 @@ template <typename T>
 class Mat
 {
 public:
-    void Fill(T **A, T **B, int N);            //A,B矩阵赋值
+    void Assign(T **A, T **B, int N);          //A,B矩阵赋值
     void ADD(T **A, T **B, T **Res, int N);    //矩阵加法
     void SUB(T **A, T **B, T **Res, int N);    //矩阵减法
     void MUL(T **A, T **B, T **Res, int N);    //矩阵乘法brute
@@ -21,7 +21,7 @@ public:
     void Strassen(int N, T **A, T **B, T **C); //strassen算法实现
 };
 template <typename T>
-void Mat<T>::Fill(T **A, T **B, int N)
+void Mat<T>::Assign(T **A, T **B, int N)
 {
     for (int i = 0; i < N; i++)
     {
@@ -78,7 +78,7 @@ void Mat<T>::Strassen(int N, T **A, T **B, T **C)
         n = N + 1;
     else
         n = N;
-    if (n <= 2)
+    if (n <= 100)
     {
         MUL(A, B, C, N);
     }
@@ -284,7 +284,7 @@ int main()
         C[i] = new int[N];
     }
     clock_t startTime, endTime;
-    mat.Fill(A, B, N);
+    mat.Assign(A, B, N);
     startTime = clock();      //计时开始
     mat.Strassen(N, A, B, C); //strassen矩阵相乘算法
     endTime = clock();        //计时结束

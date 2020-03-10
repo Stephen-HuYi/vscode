@@ -1,30 +1,30 @@
-'''
-@Description: 
-@Author: HuYi
-@Date: 2020-03-08 14:57:03
-@LastEditors: HuYi
-@LastEditTime: 2020-03-08 16:35:16
-'''
 import tkinter as tk
+windows = tk.Tk()
+windows.title("输入框、文本框")
+windows.geometry("500x300")  # 界面大小
+# 设置输入框，对象是在windows上，show参数--->显示文本框输入时显示方式None:文字不加密，show="*"加密
+e = tk.Entry(windows, show=None)
+e.pack()
 
 
-def callback(event):
-    print("当前位置：", event.x, event.y)
+def insert_point():
+    var = e.get()  # 获取输入的信息
+    t.insert("insert", var)  # 参数1：插入方式，参数2：插入的数据
 
 
-window = tk.Tk()
-window.title('window')
-window.geometry('500x300')
-# 第4步，在图形界面上创建一个标签用以显示内容并放置
-tk.Label(window, text='on the window', bg='red', font=(
-    'Arial', 16)).pack()   # 和前面部件分开创建和放置不同，其实可以创建和放置一步完成
-
-# 第5步，创建一个主frame，长在主window窗口上
-frame = tk.Frame(window, width=300, height=300)
-frame.bind("<Button-1>", callback)
-frame.bind("<Button-2>", callback)
-frame.bind("<Button-3>", callback)
-frame.pack()
+def insert_end():
+    var = e.get()
+    t.insert("end", var)
 
 
-window.mainloop()
+# 根据光标位置插入数据
+b1 = tk.Button(windows, text="insert point", width=15,
+               height=2, command=insert_point)
+b1.pack()
+b2 = tk.Button(windows, text="insert end", width=15,
+               height=2, command=insert_end)
+b2.pack()
+# 设置文本框
+t = tk.Text(windows, height=2)
+t.pack()
+windows.mainloop()
