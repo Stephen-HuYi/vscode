@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-03-08 11:24:32
 @LastEditors: HuYi
-@LastEditTime: 2020-03-10 22:44:42
+@LastEditTime: 2020-03-11 22:48:27
 '''
 import random
 import math
@@ -11,64 +11,78 @@ import time
 import tkinter as tk
 
 
-def get_dis(array):
-    return math.sqrt((array[0][0]-array[1][0])**2+(array[0][1]-array[1][1])**2)
+def closest(P):
+    X = sorted(P)
+    Y = sorted(P, key=lambda last: last[-1])
+    return divide(X, Y)
 
 
-# 生成器：生成横跨跨两个点集的候选点
-def candidateDot(u, right, dis, med_x):
-    # 遍历right（已按横坐标升序排序）。若横坐标小于med_x-dis则进入下一次循环；若横坐标大于med_x+dis则跳出循环；若点的纵坐标好是否落在在[u[1]-dis,u[1]+dis]，则返回这个点
-    for v in right:
-        if v[0] < med_x-dis:
-            continue
-        if v[0] > med_x+dis:
-            break
-        if v[1] >= u[1]-dis and v[1] <= u[1]+dis:
-            yield v
-
-
-# 求出横跨两个部分的点的最小距离
-def combine(left, right, res_min, med_x):
-    dis = res_min[1]
-    dis_min = res_min[1]
-    pair = res_min[0]
-    for u in left:
-        if u[0] < med_x-dis:
-            continue
-        for v in candidateDot(u, right, dis, med_x):
-            dis = get_dis([u, v])
+# 暴力算法
+def brute(P):
+    dis_min = float('inf')
+    pair = []
+    for i in range(len(P)):
+        for j in range(i+1, len(P)):
+            dis = get_dis([P[i], P[j]])
             if dis < dis_min:
                 dis_min = dis
-                pair = [u, v]
+                pair = [P[i], P[j]]
     return [pair, dis_min]
 
 
-# 分治求解
-def divide(array):
-    # 求序列元素数量
-    n = len(array)
-    # 按点的纵坐标升序排序
-    array = sorted(array)
-    # 递归开始进行
-    if n <= 1:
-        return None, float('inf')
-    elif n == 2:
-        return [array, get_dis(array)]
-    else:
-        half = int(len(array)/2)
-        med_x = (array[half][0]+array[-half-1][0])/2
-        left = array[:half]
-        res_left = divide(left)
-        right = array[half:]
-        res_right = divide(right)
-        # 获取两集合中距离最短的点对
-        if res_left[1] < res_right[1]:
-            res_min = combine(left, right, res_left, med_x)
+def get_dis(P):
+    return math.sqrt((P[0][0]-P[1][0])**2+(P[0][1]-P[1][1])**2)
+
+
+def combine(Y2, res):
+    n2 = len(Y2)
+    pair = res[0]
+    dis_min = res[1]
+    for i, u in enumerate(Y2):
+        if i < n2 - 7:
+            for v in Y2[i+1:i+7]:
+                dis = get_dis([u, v])
+                if dis < dis_min:
+                    dis_min = dis
+                    pair = [u, v]
         else:
-            res_min = combine(left, right, res_right, med_x)
-        pair = res_min[0]
-        dis_min = res_min[1]
+            for v in Y2[i+1:n2-1]:
+                dis = get_dis([u, v])
+                if dis < dis_min:
+                    dis_min = dis
+                    pair = [u, v]
     return [pair, dis_min]
+
+
+# 分解
+def divide(X, Y):
+    n = len(X)
+    if n <= 3:
+        res_min = brute(X)
+    else:
+        half = int(n / 2)
+        x_med = (X[half][0]+X[-half-1][0])/2  # 找到横坐标中位数
+        X_L = X[:half]
+        X_R = X[half:]
+        Y_L = []
+        Y_R = []
+        for i in range(n):
+            if Y[i] in X_L:
+                Y_L.append(Y[i])
+            else:
+                Y_R.append(Y[i])
+        res_L = divide(X_L, Y_L)
+        res_R = divide(X_R, Y_R)
+        dis_min = min(res_L[1], res_R[1])
+        Y2 = []
+        for i in range(n):
+            if abs(Y[i][0]-x_med) < dis_min:
+                Y2.append(Y[i])
+        if res_L[1] < res_R[1]:
+            res_min = combine(Y2, res_L)
+        else:
+            res_min = combine(Y2, res_R)
+    return res_min
 
 
 # 图形界面实现
@@ -96,10 +110,10 @@ def handle(event, array):
 
 def moderandom():
     num = int(e.get())
-    array = [(random.randint(-10000, 10000), random.randint(-10000, 10000))
+    array = [(random.randint(-100000, 100000), random.randint(-100000, 100000))
              for x in range(num)]
     start = time.time()
-    temp = divide(array)
+    temp = closest(array)
     end = time.time()
     time_cost = end-start
     text.delete(1.0, tk.END)
@@ -118,7 +132,7 @@ def moderandom():
 def calc(array):
     text.delete(1.0, tk.END)
     start = time.time()
-    temp = divide(array)
+    temp = closest(array)
     end = time.time()
     time_cost = end-start
     text.delete(1.0, tk.END)
