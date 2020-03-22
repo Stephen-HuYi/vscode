@@ -3,18 +3,12 @@
 @Author: HuYi
 @Date: 2020-03-08 11:24:32
 @LastEditors: HuYi
-@LastEditTime: 2020-03-11 22:38:36
+@LastEditTime: 2020-03-12 11:36:07
 '''
 import random
 import math
 import time
 import tkinter as tk
-
-
-def closest(P):
-    X = sorted(P)
-    Y = sorted(P, key=lambda last: last[-1])
-    return divide(X, Y)
 
 
 def get_dis(array):
@@ -50,35 +44,28 @@ def combine(left, right, res_min, med_x):
 
 
 # 分治求解
-def divide(X, Y):
+def divide(array):
     # 求序列元素数量
-    n = len(X)
+    n = len(array)
     # 按点的纵坐标升序排序
-    X = sorted(X)
+    array = sorted(array)
     # 递归开始进行
     if n <= 1:
         return None, float('inf')
     elif n == 2:
-        return [X, get_dis(X)]
+        return [array, get_dis(array)]
     else:
-        half = int(len(X)/2)
-        med_x = (X[half][0]+X[-half-1][0])/2
-        X_L = X[:half]
-        X_R = X[half:]
-        Y_L = []
-        Y_R = []
-        for i in range(n):
-            if Y[i] in X_L:
-                Y_L.append(Y[i])
-            else:
-                Y_R.append(Y[i])
-        res_left = divide(X_L, Y_L)
-        res_right = divide(X_R, Y_R)
+        half = int(len(array)/2)
+        med_x = (array[half][0]+array[-half-1][0])/2
+        left = array[:half]
+        res_left = divide(left)
+        right = array[half:]
+        res_right = divide(right)
         # 获取两集合中距离最短的点对
         if res_left[1] < res_right[1]:
-            res_min = combine(X_L, X_R, res_left, med_x)
+            res_min = combine(left, right, res_left, med_x)
         else:
-            res_min = combine(X_L, X_R, res_right, med_x)
+            res_min = combine(left, right, res_right, med_x)
         pair = res_min[0]
         dis_min = res_min[1]
     return [pair, dis_min]
@@ -91,7 +78,7 @@ window.geometry('800x600')
 show = tk.Message(window, text="计算结果(Θ(nlgn)算法)",
                   font=('Arial', 12), width=200)
 show.pack()
-text = tk.Text(window, width=60, height=6)
+text = tk.Text(window, width=100, height=6)
 text.pack()
 e = tk.Entry(window, show=None)
 e.place(x=500, y=115, anchor='nw')
@@ -109,10 +96,10 @@ def handle(event, array):
 
 def moderandom():
     num = int(e.get())
-    array = [(random.randint(-10000, 10000), random.randint(-10000, 10000))
+    array = [(random.uniform(-10000, 10000), random.uniform(-10000, 10000))
              for x in range(num)]
     start = time.time()
-    temp = closest(array)
+    temp = divide(array)
     end = time.time()
     time_cost = end-start
     text.delete(1.0, tk.END)
@@ -131,7 +118,7 @@ def moderandom():
 def calc(array):
     text.delete(1.0, tk.END)
     start = time.time()
-    temp = closest(array)
+    temp = divide(array)
     end = time.time()
     time_cost = end-start
     text.delete(1.0, tk.END)
