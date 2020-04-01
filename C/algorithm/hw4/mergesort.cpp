@@ -3,7 +3,7 @@
  * @Author: HuYi
  * @Date: 2020-03-22 16:42:04
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-23 21:29:49
+ * @LastEditTime: 2020-04-01 15:47:10
  */
 
 #include <iostream>
@@ -15,19 +15,14 @@ void mergeArray(int arr[], int left, int mid, int right, int temp[])
 {
     int i = left;
     int j = mid + 1;
-    int m = mid;
-    int r = right;
     int t = 0;
-    while (i <= m && j <= r)
+    while (i <= mid && j <= right)
     {
-        if (arr[i] <= arr[j])
-            temp[t++] = arr[i++];
-        else
-            temp[t++] = arr[j++];
+        temp[t++] = (arr[i] <= arr[j]) ? arr[i++] : arr[j++];
     }
-    while (i <= m)
+    while (i <= mid)
         temp[t++] = arr[i++];
-    while (j <= r)
+    while (j <= right)
         temp[t++] = arr[j++];
     for (i = 0; i < t; i++)
         arr[left + i] = temp[i];

@@ -3,75 +3,55 @@
  * @Author: HuYi
  * @Date: 2020-03-22 16:42:13
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-23 21:50:03
+ * @LastEditTime: 2020-04-01 15:34:09
  */
 
 #include <iostream>
 #include <windows.h>
 #include <ctime>
-#include <queue>
+
 using namespace std;
-int digit_max(int num)
+
+int digit(int num) //获取num的位数
 {
-    int temp = num / 10;
-    int cnt = 1;
-    while (temp != 0)
-    {
-        temp = temp / 10;
-        cnt++;
-    }
-    return cnt;
+    return num < 10 ? 1 : 1 + digit(num / 10);
 }
 
-int get_max(int a[], int N)
-{
-    int max = 0;
-    for (int i = 0; i < N; i++)
-    {
-        if (max < a[i])
-        {
-            max = a[i];
-        }
-    }
-    return max;
-}
-
-int position(int num, int pos)
+int getnum(int num, int pos)
 {
     int temp = 1;
-    for (int i = 0; i < pos - 1; i++)
+    for (int i = 0; i < pos; i++)
     {
         temp *= 10;
     }
     return (num / temp) % 10;
 }
 
-void radixsort(int a[], int N)
+void radixsort(int a[], int N, int max)
 {
-    int *radixarray[10];
+    int *b[10];  //用来存放桶
+    int cnt[10]; //用来记录每个桶中数字个数
     for (int i = 0; i < 10; i++)
     {
-        radixarray[i] = (int *)malloc(sizeof(int) * (N + 1));
-        radixarray[i][0] = 0;
+        b[i] = new int[N];
+        cnt[i] = 0;
     }
-    int maxnum = get_max(a, N);
-    int digit = digit_max(maxnum);
-    for (int pos = 1; pos <= digit; pos++)
+    int d = digit(max);
+    for (int dd = 0; dd < d; dd++) //调用稳定的排序算法：桶排序，从低位向高位对每一位进行排序
     {
         for (int i = 0; i < N; i++)
         {
-            int num = position(a[i], pos);
-            radixarray[num][0]++;
-            int index = radixarray[num][0];
-            radixarray[num][index] = a[i];
+            int num = getnum(a[i], dd); //获取第dd位的数字
+            b[num][cnt[num]++] = a[i];
         }
-        for (int i = 0, j = 0; i < 10; i++)
+        int n = 0;
+        for (int i = 0; i < 10; i++) //只需将桶合并：因为十个桶，每个桶中的那位数字都一样，所以按照桶分好后不需要再排序
         {
-            for (int k = 1; k <= radixarray[i][0]; k++)
+            for (int j = 0; j < cnt[i]; j++)
             {
-                a[j++] = radixarray[i][k];
+                a[n++] = b[i][j];
             }
-            radixarray[i][0] = 0;
+            cnt[i] = 0;
         }
     }
 }
@@ -83,11 +63,16 @@ int main()
     cout << "Please enter the number of numbers to be sorted" << endl;
     cin >> N;
     a = new int[N];
-    for (int i = 0; i < N; i++)
+    int max = 0;
+    for (int i = 0; i < N; i++) //随机生成N个数并求出最大值
+    {
         a[i] = (rand() << 16) | (rand());
+        if (max < a[i])
+            max = a[i];
+    }
     clock_t startTime, endTime;
     startTime = clock(); //计时开始
-    radixsort(a, N);
+    radixsort(a, N, max);
     endTime = clock(); //计时结束
     cout << "The run time is: " << (double)(endTime - startTime) / CLOCKS_PER_SEC << "s" << endl;
     cout << "print result or not?(1 = yes / 0 = no)" << endl;

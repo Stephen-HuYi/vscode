@@ -3,7 +3,7 @@
  * @Author: HuYi
  * @Date: 2020-03-22 16:41:40
  * @LastEditors: HuYi
- * @LastEditTime: 2020-03-23 21:51:30
+ * @LastEditTime: 2020-04-01 09:57:10
  */
 
 #include <iostream>
@@ -12,31 +12,20 @@
 using namespace std;
 void shellsort(int a[], int N)
 {
-    int s;
-    s = N / 2;
-    if (s % 2 == 0)
+    int temp;
+    for (int inc = N / 2; inc > 0; inc /= 2)
     {
-        s++;
-    }
-    while (s > 0)
-    {
-        for (int j = s; j < N; j++)
+        for (int i = inc; i < N; i++)
         {
-            int i = j - s;
-            int temp = a[j];
-            while (i >= 0 && a[i] > temp)
+            int j = i - inc;
+            while (j >= 0 && a[j] > a[j + inc])
             {
-                a[i + s] = a[i];
-                i = i - s;
+                temp = a[j + inc];
+                a[j + inc] = a[j];
+                a[j] = temp;
+                j -= inc;
             }
-            if (i != j - s)
-                a[i + s] = temp;
         }
-        if (s == 1)
-            break;
-        s /= 2;
-        if (s % 2 == 0)
-            s++;
     }
 }
 
