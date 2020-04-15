@@ -1,10 +1,10 @@
 #include <iostream>
+#include <windows.h>
 #include <fstream>
 #include <queue>
-#include <windows.h>
 using namespace std;
 
-#define n 3                                           //柜台数设为3
+#define N 3                                           //柜台数设为3
 #define m 100                                         //设顾客数最大为100
 #define period 1000                                   //定义1s为1000ms
 int time = 0;                                         //时间
@@ -12,7 +12,7 @@ int number = 0;                                       //顾客数
 int out = 0;                                          //离开银行的顾客数
 queue<int> Staff;                                     //柜台队列
 HANDLE Mutex = CreateSemaphore(NULL, 1, 1, NULL);     //顾客取号、柜台叫号的互斥量
-HANDLE Semaphore = CreateSemaphore(NULL, n, n, NULL); //用于实现银行职员进程同步的信号量
+HANDLE Semaphore = CreateSemaphore(NULL, N, N, NULL); //用于实现银行职员进程同步的信号量
 //柜台线程
 HANDLE Thread[m];
 DWORD ThreadAdd[m];
@@ -111,7 +111,7 @@ int main()
     } while (!InFile.eof());
 
     //将柜台号入队列
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= N; i++)
         Staff.push(i);
 
     //开启P、V两个线程
@@ -128,7 +128,7 @@ int main()
     }
 
     //关闭线程
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < N; i++)
         CloseHandle(Thread[i]);
     CloseHandle(ThreadP);
     CloseHandle(ThreadV);
