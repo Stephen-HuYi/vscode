@@ -1,27 +1,21 @@
 #include <iostream>
-#include <windows.h>
 #include <fstream>
+#include <windows.h>
 #include <queue>
 using namespace std;
 
 #define N 3                                           //柜台数设为3
-#define m 100                                         //设顾客数最大为100
+#define M 100                                         //设顾客数最大为100
 #define period 1000                                   //定义1s为1000ms
 int time = 0;                                         //时间
 int number = 0;                                       //顾客数
 int out = 0;                                          //离开银行的顾客数
 queue<int> Staff;                                     //柜台队列
-HANDLE Mutex = CreateSemaphore(NULL, 1, 1, NULL);     //顾客取号、柜台叫号的互斥量
+HANDLE Mutex = CreateSemaphore(NULL, 1, 1, NULL);     //顾客拿号、柜台叫号的互斥量
 HANDLE Semaphore = CreateSemaphore(NULL, N, N, NULL); //用于实现银行职员进程同步的信号量
-//柜台线程
-HANDLE Thread[m];
-DWORD ThreadAdd[m];
-//P、V线程
-HANDLE ThreadP;
-HANDLE ThreadV;
-DWORD ThreadPAdd;
-DWORD ThreadVAdd;
-
+//柜台线程与P、V线程
+HANDLE Thread[M], ThreadP, ThreadV;
+DWORD ThreadAdd[M], ThreadPAdd, ThreadVAdd;
 //顾客
 struct Custom
 {
@@ -36,7 +30,6 @@ struct Custom
 Custom *head = new Custom;  //客户链表头指针
 Custom *now = head;         //客户链表当前指针
 queue<Custom *> CustomWait; //等待中的顾客队列
-
 //顾客接受柜台服务过程
 void Service(Custom *c)
 {
@@ -50,7 +43,6 @@ void Service(Custom *c)
         out++;
     }
 }
-
 //P函数，柜台进行叫号
 void P()
 {
@@ -72,7 +64,6 @@ void P()
         }
     }
 };
-
 //V函数，顾客进入银行
 void V()
 {
@@ -88,7 +79,6 @@ void V()
         }
     }
 }
-
 //主程序
 int main()
 {
@@ -109,15 +99,12 @@ int main()
         p->Next = q;
         number++;
     } while (!InFile.eof());
-
     //将柜台号入队列
     for (int i = 1; i <= N; i++)
         Staff.push(i);
-
     //开启P、V两个线程
     ThreadP = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)(P), NULL, 0, &ThreadPAdd);
     ThreadV = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)(V), NULL, 0, &ThreadVAdd);
-
     //时间依次+1，直到顾客全部离开
     while (1)
     {
@@ -126,11 +113,11 @@ int main()
         if (out == number)
             break;
     }
-
     //关闭线程
     for (int i = 0; i < N; i++)
         CloseHandle(Thread[i]);
     CloseHandle(ThreadP);
     CloseHandle(ThreadV);
+    system("pause");
     return 0;
 }
