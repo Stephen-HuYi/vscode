@@ -3,13 +3,13 @@
  * @Author: HuYi
  * @Date: 2020-04-16 20:16:22
  * @LastEditors: HuYi
- * @LastEditTime: 2020-04-16 21:25:21
+ * @LastEditTime: 2020-04-16 22:43:31
  */
 #include <iostream>
 #include <fstream>
 #include <windows.h>
 using namespace std;
-#define N 3 //银行职员的数量
+#define N 2 //银行职员的数量
 
 int time = 0;
 int num_out = 0;
@@ -238,7 +238,7 @@ int main()
         staff.insert(&c1[j]);
     }
     ifstream infile;
-    infile.open("test.txt", ios::in); //打开测试文件
+    infile.open("input.txt", ios::in); //打开测试文件
     if (!infile)
     {
         cerr << "Open Error!" << endl;

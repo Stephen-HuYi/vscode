@@ -3,14 +3,14 @@
  * @Author: HuYi
  * @Date: 2020-04-16 20:14:18
  * @LastEditors: HuYi
- * @LastEditTime: 2020-04-16 21:25:14
+ * @LastEditTime: 2020-04-16 22:55:34
  */
 #include <iostream>
 #include <fstream>
 #include <queue>
 #include <windows.h>
 using namespace std;
-#define CLE 3                                             //柜员数
+#define CLE 2                                             //柜员数
 #define CUS 100                                           //最大顾客数
 #define period 1000                                       //定义1s为1000ms
 int time = 0;                                             //时间
@@ -94,7 +94,7 @@ void V() //V函数，顾客进入银行
 int main()
 {
     ifstream InFile; //输入顾客数据
-    InFile.open("test.txt");
+    InFile.open("input.txt");
     head->Next = NULL;
     do
     {
