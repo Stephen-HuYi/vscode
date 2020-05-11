@@ -3,22 +3,8 @@
 @Author: HuYi
 @Date: 2020-05-06 11:59:42
 @LastEditors: HuYi
-@LastEditTime: 2020-05-07 15:40:58
+@LastEditTime: 2020-05-08 13:05:38
 '''
-'''
-@Description:
-@Author: HuYi
-@Date: 2020-05-03 15:58:38
-@LastEditors: HuYi
-@LastEditTime: 2020-05-06 11:45:24
-'''
-
-
-# functions to show an image
-
-
-
-
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 import torchvision
@@ -31,6 +17,8 @@ from torch.utils.data import Dataset, DataLoader
 from torch.autograd import Variable
 import torch
 import json
+
+
 def default_loader(path):
     return Image.open('D:/vscode/python/datanews/test/'+path).convert('RGB')
 

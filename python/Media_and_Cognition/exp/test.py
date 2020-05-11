@@ -3,21 +3,8 @@
 @Author: HuYi
 @Date: 2020-05-06 19:23:57
 @LastEditors: HuYi
-@LastEditTime: 2020-05-07 15:23:38
+@LastEditTime: 2020-05-08 12:17:57
 '''
-'''
-@Description:
-@Author: HuYi
-@Date: 2020-05-03 15:58:38
-@LastEditors: HuYi
-@LastEditTime: 2020-05-06 19:00:50
-'''
-
-
-# functions to show an image
-
-
-
 
 import torch.optim as optim
 import torch.nn.functional as F
@@ -31,6 +18,8 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.datasets import ImageFolder
 import os
 import operator
+
+
 def imshow(img):
     img = img / 2 + 0.5     # unnormalize
     npimg = img.numpy()
