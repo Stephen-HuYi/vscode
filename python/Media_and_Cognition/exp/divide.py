@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-06 11:16:57
 @LastEditors: HuYi
-@LastEditTime: 2020-05-06 11:42:55
+@LastEditTime: 2020-05-11 22:46:26
 '''
 import os
 import random
@@ -54,7 +54,7 @@ def divideTrainValiTest(source, target):
 
 
 if __name__ == '__main__':
-    filepath = 'D:/vscode/python/data/Train'
-    dist = 'D:/vscode/python/datanews'
+    filepath = 'D:/vscode/python/Media_and_Cognition/exp/data'
+    dist = 'D:/vscode/python/Media_and_Cognition/exp/datanews'
     make_dir(filepath, dist)
     divideTrainValiTest(filepath, dist)

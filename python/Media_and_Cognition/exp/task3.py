@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-08 12:17:26
 @LastEditors: HuYi
-@LastEditTime: 2020-05-08 14:13:47
+@LastEditTime: 2020-05-11 22:42:53
 '''
 import torch.optim as optim
 import torch.nn.functional as F
@@ -20,6 +20,7 @@ import os
 import operator
 import json
 from PIL import Image
+root = 'D:/vscode/python/Media_and_Cognition/exp/'
 
 
 def imshow(img):
@@ -30,7 +31,7 @@ def imshow(img):
 
 
 def default_loader(path):
-    return Image.open('D:/vscode/python/DataFewShot/test/'+path).convert('RGB')
+    return Image.open(root+'DataFewShot/test/'+path).convert('RGB')
 
 
 class MyDataset(Dataset):
@@ -100,12 +101,12 @@ if __name__ == "__main__":
     transform = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor(
     ), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     trainset = torchvision.datasets.ImageFolder(
-        'DataFewShot/train/', transform=transform)
+        root+'DataFewShot/train/', transform=transform)
     print(len(trainset))
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=1, shuffle=True, num_workers=0)
 
-    testset = MyDataset(js='D:/vscode/python/DataFewShot/test.json',
+    testset = MyDataset(js=root+'DataFewShot/test.json',
                         transform=transform)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=1, shuffle=False, num_workers=0)
@@ -116,7 +117,7 @@ if __name__ == "__main__":
     dataiter = iter(trainloader)
     images, labels = dataiter.next()
 
-    PATH = './CNN_best.pth'
+    PATH = root+'CNN_best.pth'
     net = Net()
     net.load_state_dict(torch.load(PATH))
     num_ftrs = net.fc3.in_features
@@ -155,7 +156,7 @@ if __name__ == "__main__":
         print('[%d, %5d] loss: %.3f' %
               (epoch + 1, i + 1, running_loss / len(trainset)))
         #PATH = PATH_vec[epoch]
-    PATH = './finetune.pth'
+    PATH = root+'finetune.pth'
     torch.save(net.state_dict(), PATH)
     net = Net2()
 
@@ -168,5 +169,5 @@ if __name__ == "__main__":
             _, predicted = torch.max(outputs.data, 1)
             mydict[str(fn)[2:-3]] = str(classes[predicted])
 
-    with open('task3.json', 'w', encoding='utf-8') as f:
+    with open(root+'task3.json', 'w', encoding='utf-8') as f:
         json.dump(mydict, f)

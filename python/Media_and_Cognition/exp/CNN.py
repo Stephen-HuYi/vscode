@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-03 15:58:38
 @LastEditors: HuYi
-@LastEditTime: 2020-05-07 11:43:34
+@LastEditTime: 2020-05-11 22:35:40
 '''
 import torch.optim as optim
 import torch.nn.functional as F
@@ -17,9 +17,11 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.datasets import ImageFolder
 import os
 import operator
-
+root = 'D:/vscode/python/Media_and_Cognition/exp/'
 
 # functions to show an image
+
+
 def imshow(img):
     img = img / 2 + 0.5     # unnormalize
     npimg = img.numpy()
@@ -53,13 +55,13 @@ if __name__ == "__main__":
     ), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     # 使用torchvision.datasets.ImageFolder读取数据集 指定train 和 val文件夹
     trainset = torchvision.datasets.ImageFolder(
-        'datanews/train/', transform=transform)
+        root+'datanews/train/', transform=transform)
     print(len(trainset))
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=4, shuffle=True, num_workers=0)
     # print(trainset.imgs)
     valset = torchvision.datasets.ImageFolder(
-        'datanews/val/', transform=transform)
+        root+'datanews/val/', transform=transform)
     print(len(valset))
     valloader = torch.utils.data.DataLoader(
         valset, batch_size=1, shuffle=True, num_workers=0)
@@ -74,8 +76,8 @@ if __name__ == "__main__":
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-    PATH_vec = ['./CNN1.pth', './CNN2.pth', './CNN3.pth', './CNN4.pth', './CNN5.pth', './CNN6.pth', './CNN7.pth', './CNN8.pth', './CNN9.pth', './CNN10.pth',
-                './CNN11.pth', './CNN12.pth', './CNN13.pth', './CNN14.pth', './CNN15.pth', './CNN16.pth', './CNN17.pth', './CNN18.pth', './CNN19.pth', './CNN20.pth', ]
+    PATH_vec = ['CNN1.pth', 'CNN2.pth', 'CNN3.pth', 'CNN4.pth', 'CNN5.pth', 'CNN6.pth', 'CNN7.pth', 'CNN8.pth', 'CNN9.pth', 'CNN10.pth',
+                'CNN11.pth', 'CNN12.pth', 'CNN13.pth', 'CNN14.pth', 'CNN15.pth', 'CNN16.pth', 'CNN17.pth', 'CNN18.pth', 'CNN19.pth', 'CNN20.pth', ]
 
     loss_vec = [0 for _ in range(20)]
     for epoch in range(20):  # loop over the dataset multiple times
@@ -100,7 +102,7 @@ if __name__ == "__main__":
         loss_vec[epoch] = running_loss
         print('[%d, %5d] loss: %.3f' %
               (epoch + 1, i + 1, loss_vec[epoch] / len(trainset)))
-        PATH = PATH_vec[epoch]
+        PATH = root+PATH_vec[epoch]
         torch.save(net.state_dict(), PATH)
 
     dataiter = iter(valloader)

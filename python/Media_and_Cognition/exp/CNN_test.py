@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-06 11:59:42
 @LastEditors: HuYi
-@LastEditTime: 2020-05-08 13:05:38
+@LastEditTime: 2020-05-11 22:36:02
 '''
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
@@ -17,10 +17,11 @@ from torch.utils.data import Dataset, DataLoader
 from torch.autograd import Variable
 import torch
 import json
+root = 'D:/vscode/python/Media_and_Cognition/exp/'
 
 
 def default_loader(path):
-    return Image.open('D:/vscode/python/datanews/test/'+path).convert('RGB')
+    return Image.open(root+'datanews/test/'+path).convert('RGB')
 
 
 def imshow(img):
@@ -76,13 +77,12 @@ if __name__ == "__main__":
     # 预处理
     transform = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor(
     ), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    testset = MyDataset(js='D:/vscode/python/datanews/test.json',
-                        transform=transform)
+    testset = MyDataset(js=root+'datanews/test.json', transform=transform)
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=1, shuffle=False, num_workers=0)
     classes = ('i2', 'i4', 'i5', 'io', 'ip', 'p11', 'p23', 'p26', 'p5', 'pl30',
                'pl40',  'pl5', 'pl50', 'pl60', 'pl80', 'pn', 'pne', 'po', 'w57')
-    PATH = './CNN_best.pth'
+    PATH = root+'CNN_best.pth'
     net = Net()
     net.load_state_dict(torch.load(PATH))
     mydict = {}
@@ -92,5 +92,5 @@ if __name__ == "__main__":
             outputs = net(images)
             _, predicted = torch.max(outputs.data, 1)
             mydict[str(fn)[2:-3]] = str(classes[predicted])
-    with open('pred.json', 'w', encoding='utf-8') as f:
+    with open(root+'pred.json', 'w', encoding='utf-8') as f:
         json.dump(mydict, f)
