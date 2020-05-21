@@ -1,101 +1,47 @@
 '''
-@Description: 
+@Description:
 @Author: HuYi
-@Date: 2020-05-06 19:23:57
+@Date: 2020-05-06 11:59:42
 @LastEditors: HuYi
-@LastEditTime: 2020-05-08 12:17:57
+@LastEditTime: 2020-05-18 20:33:58
 '''
+# Usage: python test.py --predfile pred.json --labelfile test.json
 
-import torch.optim as optim
-import torch.nn.functional as F
-import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
-import torch
-import torchvision
-import torchvision.transforms as transforms
-from torch.utils.data import Dataset, DataLoader
-from torchvision.datasets import ImageFolder
-import os
-import operator
+import json
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--predfile', type=str, default='pred.json')
+parser.add_argument('--labelfile', type=str, default='test.json')
+args = parser.parse_args()
 
-def imshow(img):
-    img = img / 2 + 0.5     # unnormalize
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
+pred = json.load(open(args.predfile, 'r'))
+label = json.load(open(args.labelfile, 'r'))
 
+classes = []
+correct = {}
+total = {}
+for cls in label.values():
+    if cls not in classes:
+        classes.append(cls)
+        correct[cls] = 0
+        total[cls] = 0
+classes.sort()
 
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 19)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
-
-if __name__ == "__main__":
-    # 预处理
-    transform = transforms.Compose([transforms.Resize((32, 32)), transforms.ToTensor(
-    ), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    # 使用torchvision.datasets.ImageFolder读取数据集 指定train 和 val文件夹
-    # print(trainset.imgs)
-    valset = torchvision.datasets.ImageFolder(
-        'datanews/val/', transform=transform)
-    print(len(valset))
-    valloader = torch.utils.data.DataLoader(
-        valset, batch_size=1, shuffle=False, num_workers=0)
-    # 利用自定义dateset读取测试数据对象，并设定batch-size和工作现场
-    classes = ('i2', 'i4', 'i5', 'io', 'ip', 'p11', 'p23', 'p26', 'p5', 'pl30',
-               'pl40',  'pl5', 'pl50', 'pl60', 'pl80', 'pn', 'pne', 'po', 'w57')
-    # get some random training images
-    net = Net()
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
-    dataiter = iter(valloader)
-    images, labels = dataiter.next()
-
-    PATH = './CNN_best.pth'
-    net.load_state_dict(torch.load(PATH))
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for data in valloader:
-            images, labels = data
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-    print('Accuracy of the network on the val images: %.3f %%' % (
-        100*correct / total))
-    class_correct = list(0. for i in range(19))
-    class_total = list(0. for i in range(19))
-    with torch.no_grad():
-        for data in valloader:
-            images, labels = data
-            outputs = net(images)
-            _, predicted = torch.max(outputs, 1)
-            c = (predicted == labels).squeeze()
-            for i in range(1):
-                label = labels[i]
-                class_correct[label] += c.item()
-                class_total[label] += 1
-
-    for i in range(19):
-        print('Accuracy of %5s : %.3f %%' % (
-            classes[i], 100*class_correct[i] / class_total[i]))
+miss = 0
+cor = 0
+for imgname in label.keys():
+    try:
+        if(pred[imgname] == label[imgname]):
+            correct[label[imgname]] += 1
+        else:
+            print(imgname, pred[imgname], label[imgname])
+    except:
+        miss += 1
+    total[label[imgname]] += 1
+acc_str = '%d imgs missed\n' % miss
+for cls in classes:
+    acc_str += 'class:%s\trecall:%f\n' % (cls, correct[cls]/total[cls])
+    cor += correct[cls]
+acc_str += 'Accuracy: %f' % (cor/len(label))
+print(acc_str)

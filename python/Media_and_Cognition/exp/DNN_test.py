@@ -1,9 +1,9 @@
 '''
-@Description:
+@Description: 
 @Author: HuYi
-@Date: 2020-05-06 11:59:42
+@Date: 2020-05-18 12:54:27
 @LastEditors: HuYi
-@LastEditTime: 2020-05-18 12:59:40
+@LastEditTime: 2020-05-18 12:54:55
 '''
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
@@ -82,7 +82,7 @@ if __name__ == "__main__":
         testset, batch_size=1, shuffle=False, num_workers=0)
     classes = ('i2', 'i4', 'i5', 'io', 'ip', 'p11', 'p23', 'p26', 'p5', 'pl30',
                'pl40',  'pl5', 'pl50', 'pl60', 'pl80', 'pn', 'pne', 'po', 'w57')
-    PATH = root+'CNN_best.pth'
+    PATH = root+'MCDNN_best.pth'
     net = Net()
     net.load_state_dict(torch.load(PATH))
     mydict = {}
