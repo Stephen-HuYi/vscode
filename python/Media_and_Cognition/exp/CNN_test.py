@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-06 11:59:42
 @LastEditors: HuYi
-@LastEditTime: 2020-05-18 12:59:40
+@LastEditTime: 2020-05-24 17:19:37
 '''
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
@@ -90,7 +90,8 @@ if __name__ == "__main__":
         for data in testloader:
             images, fn, labels = data
             outputs = net(images)
+            print(outputs.data)
             _, predicted = torch.max(outputs.data, 1)
             mydict[str(fn)[2:-3]] = str(classes[predicted])
-    with open(root+'pred.json', 'w', encoding='utf-8') as f:
+    with open(root+'pred000.json', 'w', encoding='utf-8') as f:
         json.dump(mydict, f)

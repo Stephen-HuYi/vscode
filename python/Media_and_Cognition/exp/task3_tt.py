@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-08 12:17:26
 @LastEditors: HuYi
-@LastEditTime: 2020-05-23 12:08:08
+@LastEditTime: 2020-05-23 12:13:56
 '''
 import torch.optim as optim
 import torch.nn.functional as F
@@ -133,4 +133,5 @@ if __name__ == "__main__":
     # PATH_vec = ['./finetune1.pth', './finetune2.pth', './finetune3.pth', './finetune4.pth', './finetune5.pth', './finetune6.pth', './finetune7.pth', './finetune8.pth', './finetune9.pth', './finetune10.pth',
     # './finetune11.pth', './finetune12.pth', './finetune13.pth', './finetune14.pth', './finetune15.pth', './finetune16.pth', './finetune17.pth', './finetune18.pth', './finetune19.pth', './finetune20.pth', ]
     params_kan = list(net.parameters())
-    print(params_kan)
+    with open("cnm.txt", "a") as f:
+        f.write(str(params_kan))

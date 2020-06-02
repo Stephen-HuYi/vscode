@@ -88,76 +88,6 @@ class Net(nn.Module):
         return x1+x2+x3+x4+x5
 
 
-class Net2(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        # DNN1
-        self.conv1_1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2_1 = nn.Conv2d(6, 16, 5)
-        self.fc1_1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2_1 = nn.Linear(120, 84)
-        self.fc3_1 = nn.Linear(84, 11)
-        # DNN2
-        self.conv1_2 = nn.Conv2d(3, 6, 5)
-        self.conv2_2 = nn.Conv2d(6, 16, 5)
-        self.fc1_2 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2_2 = nn.Linear(120, 84)
-        self.fc3_2 = nn.Linear(84, 11)
-        # DNN3
-        self.conv1_3 = nn.Conv2d(3, 6, 5)
-        self.conv2_3 = nn.Conv2d(6, 16, 5)
-        self.fc1_3 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2_3 = nn.Linear(120, 84)
-        self.fc3_3 = nn.Linear(84, 11)
-        # DNN4
-        self.conv1_4 = nn.Conv2d(3, 6, 5)
-        self.conv2_4 = nn.Conv2d(6, 16, 5)
-        self.fc1_4 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2_4 = nn.Linear(120, 84)
-        self.fc3_4 = nn.Linear(84, 11)
-        # DNN5
-        self.conv1_5 = nn.Conv2d(3, 6, 5)
-        self.conv2_5 = nn.Conv2d(6, 16, 5)
-        self.fc1_5 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2_5 = nn.Linear(120, 84)
-        self.fc3_5 = nn.Linear(84, 11)
-
-    def forward(self, x):
-        x = x.float()
-        x1 = self.pool(F.relu(self.conv1_1(x)))
-        x1 = self.pool(F.relu(self.conv2_1(x1)))
-        x1 = x1.view(-1, 16 * 5 * 5)
-        x1 = F.relu(self.fc1_1(x1))
-        x1 = F.relu(self.fc2_1(x1))
-        x1 = self.fc3_1(x1)
-        x2 = self.pool(F.relu(self.conv1_2(x)))
-        x2 = self.pool(F.relu(self.conv2_2(x2)))
-        x2 = x2.view(-1, 16 * 5 * 5)
-        x2 = F.relu(self.fc1_2(x2))
-        x2 = F.relu(self.fc2_2(x2))
-        x2 = self.fc3_2(x2)
-        x3 = self.pool(F.relu(self.conv1_3(x)))
-        x3 = self.pool(F.relu(self.conv2_3(x3)))
-        x3 = x3.view(-1, 16 * 5 * 5)
-        x3 = F.relu(self.fc1_3(x3))
-        x3 = F.relu(self.fc2_3(x3))
-        x3 = self.fc3_3(x3)
-        x4 = self.pool(F.relu(self.conv1_4(x)))
-        x4 = self.pool(F.relu(self.conv2_4(x4)))
-        x4 = x4.view(-1, 16 * 5 * 5)
-        x4 = F.relu(self.fc1_4(x4))
-        x4 = F.relu(self.fc2_4(x4))
-        x4 = self.fc3_4(x4)
-        x5 = self.pool(F.relu(self.conv1_5(x)))
-        x5 = self.pool(F.relu(self.conv2_5(x5)))
-        x5 = x5.view(-1, 16 * 5 * 5)
-        x5 = F.relu(self.fc1_5(x5))
-        x5 = F.relu(self.fc2_5(x5))
-        x5 = self.fc3_5(x5)
-        return x1+x2+x3+x4+x5
-
-
 class Model:
 
     def __init__(self, data_path, classes, config):
@@ -452,10 +382,10 @@ class Model:
         final = {}
         for i, name in enumerate(self.data_name):
             final[name] = self.label_dict_reverse[self.pred[i]]
-        json.dump(final, open('./task2.json', 'w', encoding='utf8'))
+        json.dump(final, open('./task3_MCDNN.json', 'w', encoding='utf8'))
 
     def load_best_model(self):
-        state = torch.load('./MCDNN.pth')
+        state = torch.load('./MCDNN_best.pth')
         self.net1.load_state_dict(state['net1'])
         self.net2.load_state_dict(state['net2'])
         self.net3.load_state_dict(state['net3'])
@@ -486,7 +416,7 @@ if __name__ == "__main__":
     num_ftrs = model.net1.module.fc3_4.in_features
     model.net1.module.fc3_4 = nn.Linear(num_ftrs, 11)
     num_ftrs = model.net1.module.fc3_5.in_features
-    model.net2.module.fc3_5 = nn.Linear(num_ftrs, 11)
+    model.net1.module.fc3_5 = nn.Linear(num_ftrs, 11)
     num_ftrs = model.net2.module.fc3_1.in_features
     model.net2.module.fc3_1 = nn.Linear(num_ftrs, 11)
     num_ftrs = model.net2.module.fc3_2.in_features
@@ -539,8 +469,8 @@ if __name__ == "__main__":
                               list(model.net5.module.fc3_1.parameters()) + list(model.net5.module.fc3_2.parameters()) + list(model.net5.module.fc3_3.parameters()) +
                               list(model.net5.module.fc3_4.parameters()) + list(model.net5.module.fc3_5.parameters())))
     base_params = filter(lambda p: id(p) not in ignored_params,
-                         list(model.net1.module.parameters()) + list(model.net2.module.parameters()) + list(model.net3.module.parameters()) +
-                         list(model.net4.module.parameters()) + list(model.net5.module.parameters()))
+                         list(model.net1.parameters()) + list(model.net2.parameters()) + list(model.net3.parameters()) +
+                         list(model.net4.parameters()) + list(model.net5.parameters()))
     model.optimizer = optim.Adam([{'params': base_params},
                                   {'params': model.net1.module.fc3_1.parameters(),
                                    'lr': 0.001},
