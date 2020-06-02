@@ -145,6 +145,9 @@ class Model:
         for label in self.classes:
             cnt = 0
             tmp_list = self.data[label]
+            img = tmp_list[0]
+            for i in range(20):
+                tmp_list.append(self.distortion(img))
             random.shuffle(tmp_list)
             for img in tmp_list:
                 if cnt < round(len(tmp_list)*0.8):

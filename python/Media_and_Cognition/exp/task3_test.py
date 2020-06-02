@@ -3,7 +3,7 @@
 @Author: HuYi
 @Date: 2020-05-23 12:21:57
 @LastEditors: HuYi
-@LastEditTime: 2020-05-24 16:49:52
+@LastEditTime: 2020-05-23 21:44:21
 '''
 import torch.optim as optim
 import torch.nn.functional as F
@@ -295,6 +295,7 @@ class Model:
                     output5 = self.net5(input_x5)
                     output = (output1 + output2 + output3 +
                               output4 + output5)/(5 * 5)
+
                 #output = output.long()
                     input_y = input_y.long()
                 # print(input_y.shape)
@@ -370,6 +371,7 @@ class Model:
                     output5 = self.net5(input_x5)
                     output = (output1 + output2 + output3 +
                               output4 + output5) / (5 * 5)
+                    print(output)
                     _, predicted = torch.max(output, 1)
                     self.pred += list(predicted.cpu().numpy())
         correct = [correct, correct1, correct2, correct3, correct4, correct5]
